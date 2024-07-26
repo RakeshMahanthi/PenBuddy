@@ -3,3 +3,11 @@ transformers
 tensorflow
 torch
 pdfplumber
+langchain
+langchain-community
+langchain-core
+streamlit
+chromadb
+pyPDF2
+tictoken
+paper-qa
