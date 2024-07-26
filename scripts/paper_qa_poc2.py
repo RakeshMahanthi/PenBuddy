@@ -14,6 +14,19 @@ from langchain_core.documents import Document
 
 document_directory = '../input_files'
 
+# Function to handle file upload and save
+def save_uploaded_file(uploaded_file):
+    try:
+        # Create the directory if it doesn't exist
+        os.makedirs('../input_files', exist_ok=True)
+        # Save the uploaded file to the directory
+        file_path = os.path.join(document_directory, uploaded_file.name)
+        with open(file_path, 'wb') as f:
+            f.write(uploaded_file.getbuffer())
+        return f"File saved"
+    except Exception as e:
+        return f"An error occurred: {e}"
+
 # Load documents from the input_files folder
 def load_documents_from_folder(folder_path):
     documents = []
@@ -73,14 +86,26 @@ def process_input(doucment_directory, question):
 
 # Main function to test the functionality
 def main():
+    st.set_page_config(page_title="Document QA with Local LLaMA2 Server", layout="wide")
     st.title("Document QA with Local LLaMA2 Server")
     
-    document_directory = './input_files'
+    st.header("Upload PDF")
+    uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+    
+    if uploaded_file is not None:
+        save_message = save_uploaded_file(uploaded_file)
+        st.success(save_message)
+    
+    st.header("Question Answering")
+    document_directory = '../input_files'
     question = st.text_input("Enter your question:")
     
     if st.button("Submit"):
-        answer = process_input(document_directory, question)
-        st.write("Answer:", answer)
+        if question:
+            answer = process_input(document_directory, question)
+            st.write("Answer:", answer)
+        else:
+            st.warning("Please enter a question.")
 
 if __name__ == "__main__":
     main()
